@@ -25,11 +25,29 @@
   <div class="grid-element">
     <mat-card class="example-card">
       <mat-card-header>
-        <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title>{{petName}}</mat-card-title>
-        <mat-card-subtitle>{{message}}</mat-card-subtitle>
+        <mat-card-title-group>
+          <mat-card-title>Challenges</mat-card-title>
+          <mat-icon class="calendar-icon">games</mat-icon>
+        </mat-card-title-group>
       </mat-card-header>
-      <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+      <mat-card-content>
+        <mat-accordion style="margin-top: 1em">
+          <mat-expansion-panel class="example-headers-align" *ngFor="let challenge of challenges; index as i; first as isFirst" [expanded]="isFirst" hideToggle >
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                {{challenge.name}}
+              </mat-panel-title>
+              <mat-icon>account_circle</mat-icon>
+            </mat-expansion-panel-header>
+            <div>
+              <span>Steps: {{challenge.step}}/{{challenge.steps}}</span>
+              <span *ngIf="!challenge.accomplished" style="margin-left: 2em">Status: running</span>
+              <span *ngIf="challenge.accomplished" style="margin-left: 2em; color: green">Status: accomplished!</span>
+            </div>
+          </mat-expansion-panel>
+
+        </mat-accordion>
+      </mat-card-content>
     </mat-card>
   </div>
 

@@ -15,11 +15,14 @@ export class SensorService {
      //   switchMap(() => this.getSensorData())
      // );
 
-    this.sensorDataObservable = interval(10000) // run every 1 second
+    this.sensorDataObservable = interval(1000)
       .pipe(
         startWith(0),
+        //switchMap(() => this.getSensorData())
         switchMap(() => this.getMockData())
       );
+
+    interval(10000).pipe(tap((()=> this.mockSensorValue--))).subscribe();
   }
 
   dataServiceUrl = 'http://localhost:3000/devicedata?count=10&uid=FF.3C6105DD559D';
@@ -33,7 +36,7 @@ export class SensorService {
   }
 
   getMockData(): Observable<number> {
-    this.mockSensorValue--;
+    console.log(this.mockSensorValue);
     return of(this.mockSensorValue);
   }
 

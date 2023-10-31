@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ChallengeModel} from "./model/challenge.model";
-import {filter, map, Observable} from "rxjs";
+import {filter, map, Observable, Subject} from "rxjs";
 import {ChallengeType} from "./model/challenge-type";
 import {SensorService} from "./sensor.service";
 
@@ -9,8 +9,8 @@ import {SensorService} from "./sensor.service";
 })
 export class ChallengesService {
 
-  observable: Observable<ChallengeModel[] | null>;
-  currentElectricityConsumption: number = -1;
+  observable: Subject<ChallengeModel[] | null> = new Subject<ChallengeModel[] | null>();
+  currentElectricityConsumption: number = 97;
   challenges = [
     new ChallengeModel("Turn Off 3 Devices in your Room.", 500, false, 2, 3, ChallengeType.Electricity),
     new ChallengeModel("Reduce Room Temperature to 18°C.", 350, false, 0, 1, ChallengeType.Temperature),
@@ -18,13 +18,13 @@ export class ChallengesService {
   ];
 
   constructor(private sensorService: SensorService) {
-    this.observable = this.sensorService.subscribeToSensorData().pipe(
+    this.sensorService.subscribeToSensorData().pipe(
       map(sensorData => {
+          console.log(`sensor: ${sensorData}, current: ${this.currentElectricityConsumption}`);
           if (sensorData < this.currentElectricityConsumption) {
             let electChallenges = this.challenges
               .filter(c => c.type === ChallengeType.Electricity)
               .filter(c => !c.accomplished);
-            console.debug(electChallenges);
 
             if (electChallenges.length > 0) {
               for (let ch of electChallenges) {
@@ -39,16 +39,18 @@ export class ChallengesService {
             } else {
               return null;
             }
-          } else {
-            if (this.currentElectricityConsumption < 0) {
-              this.currentElectricityConsumption = sensorData;
-            }
-            return null;
           }
+          this.currentElectricityConsumption = sensorData;
+
+          return null;
         }
       ),
       filter(chs => chs !== null)
-    );
+    ).subscribe(ch => {
+      if (ch !== undefined) {
+        this.observable.next(ch);
+      }
+    });
   }
 
   getChallenges(): ChallengeModel[] {
