@@ -5,6 +5,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { OverviewComponent } from './overview/overview.component';
+import { ScheduleComponent } from './schedule/schedule.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
@@ -15,7 +17,9 @@ import {MatCardModule} from "@angular/material/card";
 
   declarations: [
     AppComponent,
-    DashboardComponent
+    DashboardComponent,
+    OverviewComponent,
+    ScheduleComponent
   ],
   imports: [
     BrowserModule,
